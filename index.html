@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluid Mechanics Exam 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5FB; --card:#FFFFFF; --primary:#6C5CE7; --primary-soft:#EFEDFC;
+  --green:#00B894; --green-soft:#E6F9F3; --red:#E17055; --red-soft:#FDEDEA;
+  --ink:#0F172A; --muted:#64748B; --border:#E9E6F8; --amber:#FDCB6E;
+  --radius:20px;
+  --shadow:0 12px 34px rgba(108,92,231,.14);
+  --shadow-sm:0 4px 14px rgba(15,23,50,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cairo',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;
+  background:var(--bg); color:var(--ink); min-height:100vh; overflow-x:hidden;
+}
+.en{font-family:'Outfit','Work Sans',-apple-system,sans-serif; direction:ltr; unicode-bidi:isolate}
+
+/* ===== background blobs ===== */
+.blob{position:fixed; border-radius:50%; filter:blur(90px); opacity:.5; z-index:0; pointer-events:none; animation:float 14s ease-in-out infinite}
+.blob.b1{width:500px;height:500px;background:#DCD6FA;top:-120px;right:-120px}
+.blob.b2{width:360px;height:360px;background:#CFF5EA;bottom:-100px;left:-100px;animation-delay:-5s}
+.blob.b3{width:260px;height:260px;background:#FFE9D6;top:40%;left:60%;animation-delay:-9s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.06)}}
+
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 18px 80px}
+
+/* ===== header ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.15rem}
+.brand .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#6C5CE7,#8E7CF3);display:grid;place-items:center;font-size:1.4rem;box-shadow:var(--shadow-sm);animation:wiggle 4s ease-in-out infinite}
+@keyframes wiggle{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+.pill{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-weight:800;font-size:.9rem;color:var(--muted);box-shadow:var(--shadow-sm)}
+.pill b{color:var(--primary)}
+
+/* ===== screens ===== */
+.screen{display:none;animation:screenIn .55s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:34px}
+
+/* ===== start screen ===== */
+.hero{text-align:center;padding:44px 30px}
+.hero .wave{font-size:4rem;display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hero h1{font-size:2.1rem;font-weight:900;margin:14px 0 6px}
+.hero h1 span{background:linear-gradient(135deg,#6C5CE7,#00B894);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{color:var(--muted);font-weight:700;margin-bottom:26px}
+.field{text-align:right;max-width:500px;margin:0 auto 20px}
+.field label{display:block;font-weight:800;margin-bottom:8px;font-size:.95rem}
+.field input{width:100%;padding:15px 18px;border-radius:14px;border:2px solid var(--border);font-family:inherit;font-size:1.05rem;font-weight:700;background:#FBFAFF;transition:.25s;outline:none;text-align:center}
+.field input:focus{border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.info-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+.chip{background:var(--primary-soft);color:var(--primary);font-weight:800;font-size:.85rem;padding:8px 16px;border-radius:999px}
+.chip.g{background:var(--green-soft);color:var(--green)}
+.warn{background:linear-gradient(135deg,#FFF7E6,#FFEFD2);border:1.5px dashed #F5C26B;color:#8A5A00;font-weight:800;border-radius:16px;padding:14px 18px;max-width:520px;margin:0 auto 28px;font-size:.98rem;animation:pulseWarn 2.6s ease-in-out infinite}
+@keyframes pulseWarn{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:900;font-size:1.1rem;border-radius:16px;padding:16px 44px;transition:transform .18s ease-out, box-shadow .18s ease-out;background:linear-gradient(135deg,#6C5CE7,#8E7CF3);color:#fff;box-shadow:0 10px 26px rgba(108,92,231,.4)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(108,92,231,.45)}
+.btn:active{transform:scale(.96)}
+.btn.big{font-size:1.25rem;padding:18px 56px}
+.btn.ghost{background:#fff;color:var(--primary);border:2px solid var(--primary);box-shadow:none}
+.btn.green{background:linear-gradient(135deg,#00B894,#02D1A8);box-shadow:0 10px 26px rgba(0,184,148,.4)}
+
+/* ===== progress ===== */
+.prog-wrap{margin-bottom:20px}
+.prog-meta{display:flex;justify-content:space-between;font-weight:800;color:var(--muted);font-size:.88rem;margin-bottom:8px}
+.prog{height:12px;background:#E9E6F8;border-radius:999px;overflow:hidden}
+.prog > i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6C5CE7,#00B894);border-radius:999px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+
+/* ===== question card ===== */
+.qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.qnum{background:var(--primary-soft);color:var(--primary);font-weight:900;padding:7px 18px;border-radius:999px;font-size:.92rem}
+.qtag{background:var(--green-soft);color:var(--green);font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:999px}
+.qtext{font-size:1.28rem;font-weight:700;line-height:1.9;margin-bottom:24px}
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;background:#FBFAFF;border:2px solid var(--border);border-radius:16px;padding:15px 18px;cursor:pointer;transition:all .22s ease-out;text-align:left;direction:ltr}
+.opt:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.opt .key{width:34px;height:34px;min-width:34px;border-radius:10px;background:#fff;border:2px solid var(--border);display:grid;place-items:center;font-weight:800;font-family:'Outfit';color:var(--muted);transition:.22s}
+.opt .val{font-family:'Outfit','Work Sans';font-weight:600;font-size:1.02rem;color:var(--ink)}
+.opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.opt.sel .key{background:var(--primary);border-color:var(--primary);color:#fff;transform:scale(1.08)}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.correct .key{background:var(--green);border-color:var(--green);color:#fff}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .key{background:var(--red);border-color:var(--red);color:#fff}
+.opt.lock{pointer-events:none}
+
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:26px;gap:10px;flex-wrap:wrap}
+.btn.sm{font-size:.95rem;padding:12px 26px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.dots{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px}
+.dot{width:36px;height:36px;border-radius:12px;border:2px solid var(--border);background:#fff;font-weight:800;font-family:'Outfit';font-size:.85rem;color:var(--muted);cursor:pointer;transition:.2s}
+.dot:hover{border-color:var(--primary)}
+.dot.ans{background:var(--primary);border-color:var(--primary);color:#fff;transform:scale(1.06)}
+.dot.cur{outline:3px solid var(--primary-soft)}
+
+/* ===== result ===== */
+.score-ring{width:210px;height:210px;margin:10px auto 6px;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .bgc{stroke:#EDEAFB;fill:none;stroke-width:16}
+.score-ring .fgc{stroke:url(#gradScore);fill:none;stroke-width:16;stroke-linecap:round;stroke-dasharray:565.5;stroke-dashoffset:565.5;transition:stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1)}
+.score-num{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.score-num .pct{font-size:2.9rem;font-weight:900;font-family:'Outfit';line-height:1}
+.score-num .lbl{color:var(--muted);font-weight:800;font-size:.9rem}
+.grade-card{border-radius:18px;padding:22px 26px;margin:22px 0;font-size:1.25rem;font-weight:900;text-align:center;line-height:1.9;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both .5s}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.grade-a{background:linear-gradient(135deg,#E6F9F3,#D2F5E8);border:2px solid #7FE3C6;color:#00795F}
+.grade-b{background:linear-gradient(135deg,#EFEDFC,#E2DCFB);border:2px solid #B7A9F5;color:#4C3BB8}
+.grade-c{background:linear-gradient(135deg,#FDEDEA,#FBDCD5);border:2px solid #F5B0A0;color:#A8401F}
+.res-stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:10px 0 6px}
+.stat{background:#FBFAFF;border:1px solid var(--border);border-radius:14px;padding:12px 24px;text-align:center;font-weight:800}
+.stat .n{font-size:1.5rem;font-family:'Outfit';font-weight:800}
+.stat.g .n{color:var(--green)} .stat.r .n{color:var(--red)} .stat.p .n{color:var(--primary)}
+
+.review{margin-top:34px;display:grid;gap:16px}
+.rev-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow-sm);animation:screenIn .5s ease both}
+.rev-card .rq{font-weight:700;font-size:1.05rem;margin-bottom:12px;line-height:1.8}
+.rev-line{display:flex;gap:10px;align-items:flex-start;font-weight:700;font-size:.95rem;padding:9px 14px;border-radius:12px;margin-top:8px;flex-wrap:wrap}
+.rev-line.ok{background:var(--green-soft);color:#00795F}
+.rev-line.bad{background:var(--red-soft);color:#A8401F}
+.rev-line.exp{background:#F4F5FB;color:var(--muted);font-weight:600}
+.hidden{display:none!important}
+
+footer{text-align:center;color:var(--muted);font-weight:700;margin-top:44px;font-size:.85rem}
+
+/* confetti */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+
+/* ===== developer contact buttons ===== */
+.dev-contact{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.dev-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;font-family:'Outfit';font-weight:700;font-size:.98rem;color:#fff;text-decoration:none;transition:transform .18s ease-out, box-shadow .18s ease-out;box-shadow:var(--shadow-sm)}
+.dev-btn:hover{transform:translateY(-3px) scale(1.03)}
+.dev-btn:active{transform:scale(.97)}
+.dev-btn.wa{background:linear-gradient(135deg,#25D366,#128C7E)}
+.dev-btn.tg{background:linear-gradient(135deg,#2AABEE,#229ED9)}
+.dev-btn svg{width:22px;height:22px;fill:#fff;flex-shrink:0}
+.dev-label{text-align:center;color:var(--muted);font-weight:800;font-size:.9rem;margin-top:26px}
+
+
+/* ===== ask box (result screen) ===== */
+.ask-box{background:linear-gradient(135deg,#EFEDFC,#E7F9F3);border:2px dashed #B7A9F5;border-radius:18px;padding:20px 24px;margin-top:18px;animation:pop .6s cubic-bezier(.34,1.56,.64,1) both .6s}
+.ask-title{font-weight:900;font-size:1.08rem;color:#4C3BB8;margin-bottom:14px}
+.ask-btn{margin-top:0}
+
+
+/* ===== certificate ===== */
+#certBox{margin-top:24px}
+#certBox canvas{max-width:100%;border-radius:18px;box-shadow:0 14px 34px rgba(15,23,50,.18);animation:pop .7s cubic-bezier(.34,1.56,.64,1) both .4s}
+.cert-actions{margin-top:14px}
+
+
+/* ===== quick review ===== */
+.rev-nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.chapter-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 26px;margin-bottom:18px}
+.chapter-card > h2{font-size:1.35rem;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.rev-sec{border:2px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#FBFAFF}
+.rev-sec h3{font-size:1.05rem;font-weight:900;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.rev-sec ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.rev-sec li{font-size:.93rem;font-weight:700;line-height:1.9;color:#334155;padding-right:20px;position:relative}
+.rev-sec li::before{content:"◂";position:absolute;right:0;color:var(--primary);font-weight:900}
+.rev-sec .fm{direction:ltr;unicode-bidi:embed;font-family:'Outfit';font-weight:800;color:#1D4ED8;background:#EFEDFC;padding:0 6px;border-radius:6px;white-space:nowrap}
+.rev-sec .hl{background:linear-gradient(transparent 60%, #FDE68A 60%);font-weight:900;color:#0F172A}
+.review-cta{position:sticky;bottom:14px;text-align:center;margin-top:10px;z-index:5}
+.review-cta .btn{box-shadow:0 12px 30px rgba(0,184,148,.45)}
+
+
+/* ===== review additions ===== */
+.cols-r{display:flex;gap:16px;align-items:flex-start}
+.cols-r ul{flex:1}
+.rev-draw{width:185px;flex-shrink:0;background:#fff;border:2px dashed #C7D8FA;border-radius:12px;padding:8px;display:flex;align-items:center;justify-content:center}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.mini-card{background:#fff;border:2px solid var(--border);border-radius:12px;padding:8px 6px;text-align:center}
+.mini-card svg{width:90px;height:60px}
+.mini-card b{display:block;font-size:.85rem;font-weight:900;color:#0F172A;margin-top:2px}
+.mini-card span{display:block;font-size:.72rem;font-weight:700;color:#64748B;line-height:1.5}
+.ex-box{background:#FFFBEB;border:2px solid #FDE68A;border-radius:12px;padding:10px 14px;margin-top:10px}
+.ex-box b{display:block;font-size:.9rem;font-weight:900;color:#B45309;margin-bottom:6px}
+.ex-steps{padding-right:18px;display:flex;flex-direction:column;gap:5px}
+.ex-steps li{font-size:.88rem;font-weight:700;line-height:1.9;color:#334155}
+.ex-steps .fm{direction:ltr;unicode-bidi:embed;font-family:'Outfit';font-weight:800;color:#1D4ED8;background:#EFEDFC;padding:0 6px;border-radius:6px}
+@media(max-width:560px){.cols-r{flex-direction:column}.rev-draw{width:100%}.mini-grid{grid-template-columns:repeat(2,1fr)}}
+
+@media(max-width:560px){
+  .card{padding:24px 18px}
+  .hero h1{font-size:1.6rem}
+  .qtext{font-size:1.08rem}
+  .btn.big{width:100%}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="logo">🌊</div><div>امتحان ميكانيكا الموائع<br><span class="en" style="font-size:.72rem;color:var(--muted);font-weight:600">Fluid Mechanics — Ch.1 & 2</span></div></div>
+    <div class="pill">⏱️ الوقت: <b id="timer">00:00</b></div>
+  </div>
+
+  <!-- ========= START ========= -->
+  <section id="startScreen" class="screen active">
+    <div class="card hero">
+      <span class="wave">🌊</span>
+      <h1>امتحان <span class="en">Fluid Mechanics</span></h1>
+      <div class="info-chips">
+        <span class="chip">📝 <span class="en">30</span> سؤال</span>
+      </div>
+      <div class="field" style="text-align:center">
+        <label>✍️ اكتب اسمك هنا (اختياري بس يبقى أحلى)</label>
+        <input type="text" id="studentName" placeholder="اسمك يا بطل..." maxlength="30">
+      </div>
+      <div class="warn">⚠️ لو انت غشيت طنطاوي هيعرف وهيقفشك 😉</div>
+      <div class="rev-nav" style="margin-top:4px">
+        <button class="btn big" onclick="showReview()">📚 المراجعة السريعة الأول</button>
+        <button class="btn big ghost" onclick="startExam()">🚀 ابدأ الامتحان مباشرة</button>
+      </div>
+      <div class="dev-label" style="margin-top:30px">Contact the Developer 👨‍💻</div>
+      <div class="dev-contact">
+        <a class="dev-btn wa" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.250-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.501 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.150 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+        <a class="dev-btn tg" href="https://t.me/HRBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.508-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========= QUICK REVIEW ========= -->
+  <section id="reviewScreen" class="screen">
+    <div class="rev-nav">
+      <button class="btn ghost sm" onclick="goHome()">→ رجوع</button>
+      <button class="btn green sm" onclick="startExam()">🚀 ابدأ الامتحان دلوقتي</button>
+    </div>
+
+    <div class="chapter-card">
+      <h2>📘 الباب الأول: المفاهيم الأساسية <span class="en" style="font-size:.75rem;color:var(--muted)">Ch.1</span></h2>
+
+      <div class="rev-sec">
+        <h3>⚗️ 1. تعريف الـ Fluid والـ Fluid Mechanics</h3>
+        <div class="cols-r">
+        <ul>
+          <li>⭐ <span class="hl">Fluid</span> = أي مادة في طور <span class="hl">السائل أو الغاز</span> — ومميزتها إنها <span class="hl">بتتشكل باستمرار</span> تحت أي قص (shear) مهما كان صغير، ومبتوقفش زي الصلب.</li>
+          <li>الفرق الجوهري: الصلب <span class="fm">stress ∝ strain</span> (إجهاد ∝ تشوّه <span class="hl">وبيقف</span> عند زاوية معينة) • السائل <span class="fm">stress ∝ strain rate</span> (إجهاد ∝ <span class="hl">معدل</span> التشوّه ومبيخلصش).</li>
+          <li>⭐ <span class="hl">Fluid Mechanics</span> = علم بيدرس سلوك الموائع <span class="hl">سكونًا (statics)</span> أو <span class="hl">حركة (dynamics)</span> + تفاعلها مع الحواجز الصلبة أو موائع تانية عند الحدود.</li>
+          <li>التقسيمات: <span class="fm">Hydrodynamics</span> (موائع شبه مضغوطةش) ← منها <span class="fm">Hydraulics</span> (سوائل في مواسير وقنوات) • <span class="fm">Gas dynamics</span> (غازات بتتغير كثافتها — فوهات) • <span class="fm">Aerodynamics</span> (غازات على أجسام — طيارات).</li>
+          <li><span class="hl">Liquid</span>: حجم ثابت وليه <span class="fm">free surface</span> (سطح حر) • <span class="hl">Gas</span>: بيملأ أي حيز ومفيهوش سطح حر.</li>
+          <li>السائل الساكن: الـ shear = صفر، والإجهاد العمودي اسمه <span class="hl">Pressure</span>.</li>
+        </ul>
+        <div class="rev-draw">
+          <svg viewBox="0 0 190 130" width="170">
+            <rect x="15" y="18" width="70" height="94" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2.5"/>
+            <text x="50" y="70" font-size="13" font-weight="bold" text-anchor="middle" fill="#1D4ED8" font-family="Noto Sans">m</text>
+            <text x="50" y="128" font-size="10" text-anchor="middle" fill="#64748B" font-family="Noto Sans">V</text>
+            <text x="135" y="40" font-size="12" text-anchor="middle" fill="#0F172A" font-weight="bold" font-family="Cairo">ρ = m/V</text>
+            <text x="135" y="62" font-size="10" text-anchor="middle" fill="#64748B" font-family="Cairo">كتلة ÷ حجم</text>
+          </svg>
+        </div>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>🧲 2. No-Slip Condition + الرسمة</h3>
+        <div class="cols-r">
+        <ul>
+          <li>⭐ السائل الملامس لسطح صلب <span class="hl">بيلزق فيه</span> — سرعته <span class="hl">صفر بالنسبة للسطح</span> (Zero velocity at the surface).</li>
+          <li>الطبقات اللي فوق بعضها: كل طبقة بتوّقف اللي تحتها شوية (بسبب اللزوجة) → بيتكوّن تدرّج سرعة.</li>
+          <li>السبب: <span class="hl">اللزوجة Viscosity</span>.</li>
+          <li>النتيجة: تكوّن <span class="fm">Boundary Layer</span> (طبقة الحدود = منطقة اللزوجة المهمة قريب الجدار) + <span class="fm">Skin friction drag</span> (سحب سطحي).</li>
+        </ul>
+        <div class="rev-draw">
+          <svg viewBox="0 0 200 120" width="180">
+            <line x1="15" y1="15" x2="150" y2="15" stroke="#2563EB" stroke-width="2" marker-end="url(#arr)"/>
+            <line x1="15" y1="38" x2="115" y2="38" stroke="#3B82F6" stroke-width="2"/>
+            <line x1="15" y1="61" x2="80" y2="61" stroke="#60A5FA" stroke-width="2"/>
+            <line x1="15" y1="84" x2="45" y2="84" stroke="#93C5FD" stroke-width="2"/>
+            <path d="M150 15 Q60 55 18 100" fill="none" stroke="#EC4899" stroke-width="2.5" stroke-dasharray="5 4"/>
+            <rect x="10" y="100" width="180" height="10" rx="3" fill="#94A3B8"/>
+            <text x="185" y="14" font-size="10" fill="#2563EB" font-family="Noto Sans">V</text>
+            <text x="100" y="116" font-size="9" text-anchor="middle" fill="#0F172A" font-weight="bold" font-family="Cairo">سرعة صفر عند السطح</text>
+            <defs><marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#2563EB"/></marker></defs>
+          </svg>
+        </div>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>🌊 3. Classification of Fluid Flows (مع رسمة لكل نوع)</h3>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><rect x="8" y="8" width="74" height="44" rx="4" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/><line x1="22" y1="22" x2="60" y2="22" stroke="#2563EB" stroke-width="2.5" marker-end="url(#a1)"/><line x1="22" y1="38" x2="60" y2="38" stroke="#2563EB" stroke-width="2.5"/><defs><marker id="a1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#2563EB"/></marker></defs></svg>
+            <b>Internal</b><span>جريان جوه مجرى محصور (مواسير)</span>
+          </div>
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><circle cx="45" cy="30" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/><line x1="4" y1="14" x2="30" y2="14" stroke="#F59E0B" stroke-width="2.5"/><line x1="62" y1="14" x2="86" y2="14" stroke="#F59E0B" stroke-width="2.5"/><line x1="4" y1="46" x2="30" y2="46" stroke="#F59E0B" stroke-width="2.5"/><line x1="62" y1="46" x2="86" y2="46" stroke="#F59E0B" stroke-width="2.5"/></svg>
+            <b>External</b><span>جريان على جسم مكشوف (كورة/طيارة)</span>
+          </div>
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><path d="M10 14 L80 14 L70 52 L20 52 Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/><rect x="24" y="26" width="42" height="22" fill="#BFDBFE"/><line x1="24" y1="26" x2="66" y2="26" stroke="#2563EB" stroke-width="2" stroke-dasharray="4 3"/></svg>
+            <b>Open-channel</b><span>مجرى نص مليان + سطح حر (ترع)</span>
+          </div>
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><line x1="6" y1="14" x2="78" y2="14" stroke="#10B981" stroke-width="2.5"/><line x1="6" y1="28" x2="78" y2="28" stroke="#10B981" stroke-width="2.5"/><line x1="6" y1="42" x2="78" y2="42" stroke="#10B981" stroke-width="2.5"/><line x1="6" y1="52" x2="78" y2="52" stroke="#10B981" stroke-width="1.5"/></svg>
+            <b>Laminar</b><span>طباقي ناعم مرتب (زيوت/سرعة قليلة)</span>
+          </div>
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><path d="M6 14 Q20 6 34 14 T62 14 T86 14" fill="none" stroke="#DC2626" stroke-width="2.5"/><path d="M6 30 Q20 22 34 30 T62 30 T86 30" fill="none" stroke="#DC2626" stroke-width="2.5"/><path d="M6 46 Q20 38 34 46 T62 46 T86 46" fill="none" stroke="#DC2626" stroke-width="2.5"/></svg>
+            <b>Turbulent</b><span>اضطرابي فوضوي (هوى/سرعة عالية)</span>
+          </div>
+          <div class="mini-card">
+            <svg viewBox="0 0 90 60"><circle cx="22" cy="30" r="12" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2.5"/><text x="22" y="35" font-size="11" text-anchor="middle" fill="#8B5CF6" font-weight="bold" font-family="Noto Sans">P</text><line x1="36" y1="30" x2="82" y2="30" stroke="#8B5CF6" stroke-width="2.5" marker-end="url(#a2)"/><defs><marker id="a2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="#8B5CF6"/></marker></defs><text x="70" y="48" font-size="9" fill="#8B5CF6" font-family="Cairo">مضخة/رياح</text></svg>
+            <b>Forced</b><span>بقوة خارجية (مضخة/مروحة/رياح)</span>
+          </div>
+        </div>
+        <ul style="margin-top:8px">
+          <li><span class="fm">Natural</span> = بالطفو: الهوا السخن يطلع والبارد ينزل (زي السخان الشمسي).</li>
+          <li><span class="fm">Compressible</span> (الكثافة بتتغير — غازات) ↔ <span class="fm">Incompressible</span> (كثافة ثابتة — سوائل) • قاعدة: الغاز يتعامل incompressible لو <span class="fm">Ma &lt; 0.3</span>.</li>
+          <li>⭐ <span class="fm">Mach: Ma = V/c</span> • sonic = 1 • subsonic &lt; 1 • supersonic &gt; 1.</li>
+          <li><span class="fm">Transitional</span> = بيتنقل بين الطباقي والاضطرابي (تجارب <span class="fm">Reynolds</span>).</li>
+          <li><span class="fm">Steady</span> = مفيش تغير مع <span class="hl">الوقت</span> عند نقطة • <span class="fm">Uniform</span> = مفيش تغير مع <span class="hl">المكان</span>.</li>
+          <li><span class="fm">Viscous</span> (لزوجة مهمة) ↔ <span class="fm">Inviscid</span> (مناطق نهمل اللزوجة فيها — بعيد عن الجدران).</li>
+          <li>ابعاد: <span class="fm">1D/2D/3D</span> • الجريان المتكامل تطورًا في الأنبيب <span class="fm">Fully developed</span> = أحادي البعد (بيتغير مع r بس).</li>
+        </ul>
+      </div>
+
+      <div class="rev-sec">
+        <h3>⚙️ 4. System &amp; Control Volume</h3>
+        <div class="cols-r">
+        <ul>
+          <li><span class="fm">System</span> = مادة اخترناها للدراسة • <span class="fm">Surroundings</span> = كل حاجة براها • <span class="fm">Boundary</span> = سطح الفصل (سمكه صفر).</li>
+          <li>⭐ <span class="hl">Closed system</span> = كتلة <span class="hl">ثابتة</span>: مفيش كتلة بتعدي، بس <span class="hl">الطاقة</span> (حرارة/شغل) ممكن تعدي — زي الغاز جوه مكبس-أسطوانة.</li>
+          <li>⭐ <span class="hl">Control volume (open)</span> = منطقة في الفضاء: <span class="hl">كتلة + طاقة</span> بيعبروا حدودها — زي التوربين/المضخة/الفوهة/الراديتر/سخان المية.</li>
+          <li><span class="fm">Isolated</span> = closed بس ممنوع حتى الطاقة تعدي.</li>
+          <li>اختار الـ CV بذكاء = الحل بيبقى أسهل بكتير.</li>
+        </ul>
+        <div class="rev-draw">
+          <svg viewBox="0 0 190 130" width="175">
+            <rect x="12" y="30" width="80" height="80" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+            <rect x="12" y="30" width="80" height="14" fill="#F59E0B"/>
+            <text x="52" y="80" font-size="11" text-anchor="middle" fill="#92400E" font-weight="bold" font-family="Noto Sans">GAS</text>
+            <text x="52" y="96" font-size="9" text-anchor="middle" fill="#92400E" font-family="Noto Sans">Closed</text>
+            <path d="M115 45 L175 45 L165 85 L125 85 Z" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2.5"/>
+            <line x1="98" y1="65" x2="115" y2="65" stroke="#8B5CF6" stroke-width="2.5"/>
+            <line x1="175" y1="65" x2="192" y2="65" stroke="#8B5CF6" stroke-width="2.5"/>
+            <text x="145" y="70" font-size="9" text-anchor="middle" fill="#6D28D9" font-weight="bold" font-family="Noto Sans">CV</text>
+            <text x="145" y="105" font-size="9" text-anchor="middle" fill="#6D28D9" font-family="Cairo">كتلة+طاقة بيعبروا</text>
+          </svg>
+        </div>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>✏️ مسائل محلولة (مهمين جدًا — جايين في الامتحان)</h3>
+
+        <div class="ex-box">
+          <b>📌 مسألة 1–12: كتلة ووزن هواء أوضة 6×6×8 م (ρ = 1.17 kg/m³)</b>
+          <ol class="ex-steps">
+            <li>الحجم: <span class="fm">V = 6×6×8 = 288 m³</span></li>
+            <li>الكتلة: <span class="fm">m = ρV = 1.17 × 288 = 336.96 kg</span></li>
+            <li>الوزن: <span class="fm">W = mg = 336.96 × 9.81 ≈ 3305 N</span></li>
+          </ol>
+        </div>
+
+        <div class="ex-box">
+          <b>📌 مسألة 1–13: خزان بلاستيك 6 kg حجمه 0.18 m³ مملوء مية (ρ = 1000 kg/m³)</b>
+          <ol class="ex-steps">
+            <li>كتلة المية: <span class="fm">m = ρV = 1000 × 0.18 = 180 kg</span></li>
+            <li>الكتلة الكلية: <span class="fm">180 + 6 = 186 kg</span></li>
+            <li>الوزن الكلي: <span class="fm">W = 186 × 9.81 ≈ 1825 N</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter-card">
+      <h2>📗 الباب التاني: خواص الموائع <span class="en" style="font-size:.75rem;color:var(--muted)">Ch.2</span></h2>
+
+      <div class="rev-sec">
+        <h3>🧪 5. Property — Intensive &amp; Extensive</h3>
+        <ul>
+          <li><span class="fm">Property</span> = أي خاصية تصف النظام (ضغط/حرارة/حجم/كتلة...).</li>
+          <li>⭐ <span class="hl">Intensive</span> = <span class="hl">لا تعتمد</span> على كمية المادة: حرارة، ضغط، كثافة.</li>
+          <li>⭐ <span class="hl">Extensive</span> = <span class="hl">بتعتمد</span> على الكمية: الكتلة الكلية، الحجم الكلي.</li>
+          <li>اختار بسرعة: اقسم النظام نصين → الكثيفة تفضل زي ما هي، المتسعة تقل للنص.</li>
+          <li><span class="fm">Specific properties</span> = المتسعة لكل وحدة كتلة (زي <span class="fm">v = V/m</span>).</li>
+          <li>⭐ <span class="hl">State postulate</span>: حالة النظام محددة بـ <span class="hl">خاصيتين كثيفتين مستقلتين</span> بس.</li>
+        </ul>
+      </div>
+
+      <div class="rev-sec">
+        <h3>🧊 6. القوانين المهمة: Density + Specific Weight + SG</h3>
+        <ul>
+          <li>⭐ <span class="fm">Density: ρ = m/V</span> (kg/m³) — "الكتلة في كل وحدة حجم".</li>
+          <li>الحجم النوعي: <span class="fm">v = V/m = 1/ρ</span> (مقلوب الكثافة).</li>
+          <li>⭐ <span class="fm">Specific weight: γs = ρg</span> (N/m³) — "وزن كل وحدة حجم".</li>
+          <li>⭐ <span class="fm">SG = ρ / ρwater@4°C</span> — النسبة النوعية، والمرجع دايمًا مية عند 4°C (1000 kg/m³).</li>
+          <li>كثافة الغازات بتتناسب مع الضغط وتتعكس مع الحرارة • السوائل شبه ثابتة.</li>
+        </ul>
+      </div>
+
+      <div class="rev-sec">
+        <h3>🔁 7. Ideal Gas — القوانين الذهبية</h3>
+        <ul>
+          <li>⭐⭐ <span class="hl">Pv = RT</span> أو <span class="hl">P = ρRT</span> — معادلة الغاز المثالي.</li>
+          <li><span class="fm">P</span> ضغط مطلق • <span class="fm">v</span> حجم نوعي • <span class="fm">ρ</span> كثافة • <span class="fm">T</span> حرارة <span class="hl">مطلقة — لازم كلفن!</span></li>
+          <li><span class="fm">R = Ru/M</span> • الثابت العام <span class="fm">Ru = 8.314 kJ/kmol·K</span>.</li>
+          <li>صور تانية: <span class="fm">PV = mRT</span> • <span class="fm">PV = NRuT</span>.</li>
+          <li>⭐⭐ لكتلة ثابتة بين حالتين: <span class="hl">P₁V₁/T₁ = P₂V₂/T₂</span>.</li>
+        </ul>
+
+        <div class="ex-box">
+          <b>📌 مثال 2–1: كثافة هواء أوضة 4×5×6 م عند 100 kPa و25°C (R = 0.287)</b>
+          <ol class="ex-steps">
+            <li>حوّل الحرارة لكلفن: <span class="fm">T = 25 + 273.15 = 298.15 K</span> ⚠️ أهم خطوة!</li>
+            <li>الكثافة: <span class="fm">ρ = P/RT = 100 / (0.287 × 298.15) = 1.17 kg/m³</span></li>
+            <li>النسبة النوعية: <span class="fm">SG = 1.17/1000 = 0.00117</span></li>
+            <li>الحجم: <span class="fm">V = 4×5×6 = 120 m³</span> → الكتلة: <span class="fm">m = ρV = 1.17 × 120 = 140 kg</span></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>💨 8. Saturation + Vapor Pressure + Cavitation (اشرح الـ Cavitation كويس)</h3>
+        <ul>
+          <li><span class="fm">Saturation temperature Tsat</span> = درجة تغير الطور عند ضغط معين • <span class="fm">Saturation pressure Psat</span> = ضغط التغير عند حرارة معين.</li>
+          <li>⭐ <span class="hl">Vapor pressure Pv = Psat</span> — ضغط بخار المادة لما يكون في اتزان مع سائلها.</li>
+          <li>⚠️ <span class="hl">متلخبطوش</span>: <span class="fm">Partial pressure</span> = ضغط البخار جوه <span class="hl">خليط</span> غازات (زي بخار المية في الهواء).</li>
+          <li>الضغط البخاري بيزيد مع الحرارة → ولما نرفع الضغط المية بتغلي في حرارة أعلى (حلة الضغط) والعكس على الجبال (بتغلي في أقل من 100).</li>
+        </ul>
+        <div class="ex-box" style="border-color:#F5B0A0;background:#FFF5F3">
+          <b>⚠️ Cavitation بالتفصيل (مضمون سؤال مضمون):</b>
+          <ol class="ex-steps">
+            <li>في أي نقطة الضغط بيقل (زي طرف ريشة المضخة أو السحب)...</li>
+            <li>لو الضغط وقع <span class="hl">تحت الضغط البخاري</span> → السائل بيتبخر فجأة وتتكوّن <span class="hl">فقاعات بخار</span> (اسمها cavitation bubbles).</li>
+            <li>الفقاعات بتتنقل لمكان الضغط الأعلى → <span class="hl">بتنفجر</span> بضغط مدمر.</li>
+            <li>النتيجة: اهتزاز وصوت مزعج + <span class="hl">تآكل وتخريم في المعدن</span> (ريش التوربينات) + انهيار الأداء.</li>
+            <li>الحل في التصميم: خلي الضغط في أي حتة <span class="hl">فوق الضغط البخاري</span> دايمًا.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>⚡ 9. Enthalpy h</h3>
+        <div class="cols-r">
+        <ul>
+          <li>⭐⭐ <span class="hl">h = u + Pv = u + P/ρ</span> — الإنثالبي = الطاقة الداخلية + <span class="hl">شغل الدفع flow work</span> (الطاقة اللازمة تدفع السائل وتحافظ على جريانه).</li>
+          <li><span class="fm">u</span> = طاقة السائل <span class="hl">الساكن</span> • <span class="fm">h</span> = طاقة السائل <span class="hl">الماشي</span>.</li>
+          <li>ليه بنستخدمها؟ عشان لما نحسب طاقة السائل الماشي من h، شغل الدفع يكون <span class="hl">اتحسب أوتوماتيك</span> — مفيش هم.</li>
+        </ul>
+        <div class="rev-draw">
+          <svg viewBox="0 0 190 120" width="175">
+            <rect x="15" y="30" width="60" height="70" rx="4" fill="#DBEAFE" stroke="#2563EB" stroke-width="2.5"/>
+            <rect x="22" y="55" width="46" height="38" fill="#93C5FD"/>
+            <text x="45" y="115" font-size="10" text-anchor="middle" fill="#1D4ED8" font-weight="bold" font-family="Noto Sans">u (ساكن)</text>
+            <rect x="105" y="45" width="75" height="40" rx="4" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2.5"/>
+            <line x1="92" y1="65" x2="105" y2="65" stroke="#8B5CF6" stroke-width="2.5"/>
+            <line x1="180" y1="65" x2="193" y2="65" stroke="#8B5CF6" stroke-width="2.5"/>
+            <text x="142" y="70" font-size="11" text-anchor="middle" fill="#6D28D9" font-weight="bold" font-family="Noto Sans">h (ماشي)</text>
+          </svg>
+        </div>
+        </div>
+      </div>
+
+      <div class="rev-sec">
+        <h3>✏️ مثال الملَزج (صفحة 33) — بالتفصيل</h3>
+        <div class="cols-r">
+        <ul>
+          <li>الفكرة: بكرات متحدة المركز + زيت في الفجوة بينهم → نقيس العزم وعدد اللفات → نطلع اللزوجة.</li>
+          <li>⭐ القانون: <span class="fm">T = 4π²μR³ṅL/ℓ</span> → نحلها في μ: <span class="fm">μ = Tℓ/(4π²R³ṅL)</span></li>
+          <li>⚠️ وحّد الوحدات الأول: <span class="fm">ℓ = 0.15 cm = 0.0015 m</span> • <span class="fm">R = 6 cm = 0.06 m</span> • <span class="fm">L = 0.4 m</span> • <span class="fm">ṅ = 300 rpm = 5 rev/s</span> (اقسم على 60!)</li>
+          <li>عوّض: <span class="fm">μ = (1.8 × 0.0015)/(4π² × 0.06³ × 5 × 0.4) = 0.158 N·s/m²</span></li>
+        </ul>
+        <div class="rev-draw">
+          <svg viewBox="0 0 190 130" width="175">
+            <circle cx="70" cy="60" r="48" fill="#F8FAFF" stroke="#94A3B8" stroke-width="2.5"/>
+            <circle cx="70" cy="60" r="30" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2.5"/>
+            <path d="M70 22 A38 38 0 0 1 104 42" fill="none" stroke="#EC4899" stroke-width="2.5" marker-end="url(#a3)"/>
+            <line x1="70" y1="60" x2="94" y2="60" stroke="#2563EB" stroke-width="2"/>
+            <text x="83" y="54" font-size="10" fill="#2563EB" font-family="Noto Sans">R</text>
+            <text x="112" y="30" font-size="10" fill="#EC4899" font-weight="bold" font-family="Noto Sans">ṅ</text>
+            <text x="130" y="70" font-size="10" fill="#64748B" font-family="Noto Sans">ℓ = فجوة</text>
+            <text x="130" y="90" font-size="10" fill="#64748B" font-family="Noto Sans">T = عزم</text>
+            <defs><marker id="a3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7z" fill="#EC4899"/></marker></defs>
+          </svg>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-cta">
+      <button class="btn green big" onclick="startExam()">خلصت المراجعة؟ ادخل اقفل الامتحان 🚀</button>
+    </div>
+    <div style="height:20px"></div>
+  </section>
+  <section id="quizScreen" class="screen">
+    <div class="prog-wrap">
+      <div class="prog-meta"><span>السؤال <b id="curQ">1</b> من <b>30</b></span><span>أجبت على <b id="ansCount">0</b> ✍️</span></div>
+      <div class="prog"><i id="progBar"></i></div>
+    </div>
+    <div class="card">
+      <div class="qhead">
+        <span class="qnum" id="qNum">سؤال 1</span>
+        <span class="qtag" id="qTag">🧮 حسابي</span>
+      </div>
+      <div class="qtext en" id="qText"></div>
+      <div class="opts" id="optsBox"></div>
+      <div class="qnav">
+        <button class="btn ghost sm" id="prevBtn" onclick="nav(-1)">→ السابق</button>
+        <button class="btn sm" id="nextBtn" onclick="nav(1)">التالي ←</button>
+      </div>
+    </div>
+    <div class="dots" id="dotsBox"></div>
+    <div style="text-align:center;margin-top:26px">
+      <button class="btn green big" onclick="submitExam()">Submit &amp; See My Score 🏁</button>
+    </div>
+  </section>
+
+  <!-- ========= RESULT ========= -->
+  <section id="resultScreen" class="screen">
+    <div class="card" style="text-align:center">
+      <h2 style="font-size:1.7rem;font-weight:900" id="resTitle">النتيجة 🎯</h2>
+      <div class="score-ring">
+        <svg width="210" height="210" viewBox="0 0 210 210">
+          <defs><linearGradient id="gradScore" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#6C5CE7"/><stop offset="100%" stop-color="#00B894"/>
+          </linearGradient></defs>
+          <circle class="bgc" cx="105" cy="105" r="90"/>
+          <circle class="fgc" id="ringFg" cx="105" cy="105" r="90"/>
+        </svg>
+        <div class="score-num"><div><div class="pct" id="pctTxt">0%</div><div class="lbl">نتيجتك</div></div></div>
+      </div>
+      <div class="res-stats">
+        <div class="stat g"><div class="n" id="okN">0</div>✅ صح</div>
+        <div class="stat r"><div class="n" id="badN">0</div>❌ غلط</div>
+        <div class="stat p"><div class="n" id="totN">0</div>📝 إجمالي</div>
+      </div>
+      <div class="grade-card" id="gradeCard"></div>
+      <div class="ask-box">
+        <div class="ask-title">💬 لو محتاج تسأل أو تستفسر عن أي حاجة ابعتلي</div>
+        <a class="dev-btn wa ask-btn" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.250-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.501 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.150 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+      </div>
+      <div id="certBox"></div>
+      <button class="btn ghost" style="margin-top:18px" onclick="location.reload()">🔄 اعمل الامتحان تاني</button>
+    </div>
+
+    <h3 style="margin:36px 0 6px;font-size:1.3rem;font-weight:900;text-align:center">📋 مراجعة الإجابات</h3>
+    <p style="text-align:center;color:var(--muted);font-weight:700;margin-bottom:16px">شوف كل سؤال وإجابتك والإجابة الصح</p>
+    <div class="review" id="reviewBox"></div>
+    <div class="dev-label" style="margin-top:40px">Contact the Developer 👨‍💻</div>
+      <div class="dev-contact">
+        <a class="dev-btn wa" href="https://wa.me/201091139568" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.250-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.501 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.150 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>WhatsApp</span></a>
+        <a class="dev-btn tg" href="https://t.me/HRBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.508-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg><span>Telegram</span></a>
+      </div>
+    <footer>صُنع بحب ❤️ • بالتوفيق يا وحش 💪</footer>
+  </section>
+</div>
+
+<script>
+/* ================= QUESTIONS — كلها مقتبسة من ملف الـ PDF (الفصل 1 & 2) ================= */
+/* ================= الأسئلة الجديدة على السكوب النهائي ================= */
+const Q = [
+ /* ===== 10 أسئلة حسابية (من المسائل والقوانين اللي في الشرح) ===== */
+ {q:"Determine the mass of the air in a room 6 m × 6 m × 8 m (V = 288 m³) if ρ = 1.17 kg/m³. [Prob. 1–12]",
+  opts:["336.96 kg","288 kg","1728 kg","1.17 kg"], a:0, tag:"calc",
+  exp:"m = ρV = 1.17 × 288 = 336.96 kg → الكتلة = الكثافة × الحجم (مسألة 1–12)"},
+ {q:"For the same room (m = 336.96 kg), determine the weight of the air (g = 9.81 m/s²). [Prob. 1–12]",
+  opts:["3305 N","336.96 N","2880 N","1728 N"], a:0, tag:"calc",
+  exp:"W = mg = 336.96 × 9.81 ≈ 3305 N → الوزن = الكتلة × الجاذبية (مسألة 1–12)"},
+ {q:"A 6-kg plastic tank of volume 0.18 m³ is filled with water (ρ = 1000 kg/m³, g = 9.81 m/s²). Determine the weight of the combined system. [Prob. 1–13]",
+  opts:["1800 N","1860 N","1825 N","1766 N"], a:2, tag:"calc",
+  exp:"m = 1000×0.18 + 6 = 186 kg → W = 186 × 9.81 ≈ 1825 N → لازم تجمع كتلة الخزان كمان! (مسألة 1–13)"},
+ {q:"Determine the density of air in a 4 m × 5 m × 6 m room at 100 kPa and 25°C (R = 0.287 kPa·m³/kg·K). [Ex. 2–1]",
+  opts:["1.17 kg/m³","0.287 kg/m³","11.7 kg/m³","2.34 kg/m³"], a:0, tag:"calc",
+  exp:"ρ = P/RT = 100/(0.287 × 298.15) = 1.17 → ⚠️ حوّل 25°C لكلفن الأول! (مثال 2–1)"},
+ {q:"Using ρ = 1.17 kg/m³ for air, its specific gravity is:",
+  opts:["0.117","0.0117","0.00117","1.17"], a:2, tag:"calc",
+  exp:"SG = ρ/ρwater = 1.17/1000 = 0.00117 → النسبة النوعية على المية عند 4°C (مثال 2–1)"},
+ {q:"Determine the mass of the air in the 4 m × 5 m × 6 m room (V = 120 m³, ρ = 1.17 kg/m³). [Ex. 2–1]",
+  opts:["120 kg","14 kg","1170 kg","140 kg"], a:3, tag:"calc",
+  exp:"m = ρV = 1.17 × 120 = 140 kg → الحجم = 4×5×6 = 120 م³ (مثال 2–1)"},
+ {q:"A viscometer (L = 0.4 m, R = 0.06 m, gap ℓ = 0.0015 m) rotates at 300 rpm with measured torque 1.8 N·m. Determine the fluid viscosity. [Ex. 2–3]",
+  opts:["0.158 N·s/m²","1.58 N·s/m²","0.0158 N·s/m²","15.8 N·s/m²"], a:0, tag:"calc",
+  exp:"μ = Tℓ/(4π²R³ṅL) = (1.8×0.0015)/(4π²×0.06³×5×0.4) = 0.158 → ⚠️ حوّل 300 rpm لـ 5 لفة/ثانية (÷60) (مثال صفحة 33)"},
+ {q:"Using ρ = 1000 kg/m³ and g = 9.807 m/s², the specific weight of water is:",
+  opts:["980.7 N/m³","98.07 N/m³","9807 N/m³","9.807 N/m³"], a:2, tag:"calc",
+  exp:"γs = ρg = 1000×9.807 = 9807 N/m³ → وزن كل متر مكعب مية (قانون الوزن النوعي)"},
+ {q:"A liquid has a density of 850 kg/m³. Its specific gravity is:",
+  opts:["850","8.5","0.85","0.085"], a:2, tag:"calc",
+  exp:"SG = ρ/ρwater = 850/1000 = 0.85 → النسبة النوعية رقم بسيط من غير وحدات (قانون SG)"},
+ {q:"A fixed mass of ideal gas at P₁ = 100 kPa, V₁ = 2 m³, T₁ = 300 K is compressed to V₂ = 1 m³ and heated to T₂ = 400 K. Determine P₂.",
+  opts:["133.3 kPa","266.7 kPa","200 kPa","300 kPa"], a:1, tag:"calc",
+  exp:"P₂ = P₁V₁T₂/(V₂T₁) = (100×2×400)/(1×300) = 266.7 kPa → من قانون الحالتين P₁V₁/T₁ = P₂V₂/T₂ (قانون الغاز المثالي)"},
+
+ /* ===== 20 سؤال اختياري (على اللي اتشرح بالظبط) ===== */
+ {q:"A substance in the liquid or gas phase is referred to as:",
+  opts:["a fluid","a solid","a crystal","a plasma"], a:0, tag:"theory",
+  exp:"المادة في طور السائل أو الغاز اسمها Fluid — أبسط تعريف (تعريف الـ Fluid)"},
+ {q:"Fluid mechanics is defined as the science that deals with:",
+  opts:["Only water flow in pipes","The behavior of fluids at rest or in motion and their interaction with solids or other fluids at the boundaries","Only high-speed gases","Solid deformations only"], a:1, tag:"theory",
+  exp:"ميكانيكا الموائع = سلوك الموائع سكونًا أو حركة + تفاعلها مع الحواجز (تعريف الـ Fluid Mechanics)"},
+ {q:"Which of the following is a correct subcategory of fluid mechanics?",
+  opts:["Hydraulics — liquid flows in pipes and open channels","Statics — bodies at rest","Thermodynamics — heat engines","Optics — light behavior"], a:0, tag:"theory",
+  exp:"Hydraulics = فرع من الـ hydrodynamics للسوائل في المواسير والقنوات — والـ aerodynamics للغازات على أجسام والـ gas dynamics للكثافة المتغيرة (تقسيمات الميكانيكا)"},
+ {q:"According to the no-slip condition, a fluid in direct contact with a solid surface:",
+  opts:["Slips freely along the surface","Comes to a complete stop (zero velocity relative to the surface)","Moves faster than the surface","Boils at the surface"], a:1, tag:"theory",
+  exp:"شرط عدم الانزلاق: السائل بيلزق في السطح وسرعته صفر بالنسبة له — زي ما في الرسمة بالظبط (No-Slip)"},
+ {q:"The fluid property responsible for the no-slip condition is:",
+  opts:["Density","Viscosity","Pressure","Temperature"], a:1, tag:"theory",
+  exp:"اللزوجة هي السبب: هي اللي بتخلي السائل يلزق في السطح (No-Slip)"},
+ {q:"The flow region adjacent to a wall where viscous effects are significant is called the:",
+  opts:["Wake region","Boundary layer","Free stream","Control surface"], a:1, tag:"theory",
+  exp:"Boundary layer = طبقة الحدود — نتيجة الـ no-slip (No-Slip)"},
+ {q:"The flow of air over aircraft wings is ____, while the flow of gases through a jet engine is ____.",
+  opts:["internal; external","external; internal","internal; internal","external; external"], a:1, tag:"theory",
+  exp:"الهوى على الأجنحة = external، والغازات جوه المحرك = internal (Classification)"},
+ {q:"Open-channel flow is defined as:",
+  opts:["Flow completely bounded by solid surfaces","Flow in a duct partially filled with liquid and having a free surface","Flow of gas through a nozzle","Flow over an exposed pipe on a windy day"], a:1, tag:"theory",
+  exp:"القناة المفتوحة = مجرى نص مليان + سطح حر — زي الترع (Classification)"},
+ {q:"Which statement about laminar and turbulent flow is correct?",
+  opts:["Laminar is disordered with fluctuations","Laminar is smooth and orderly (oils at low velocities); turbulent is disordered (air at high velocities)","Turbulent occurs only in liquids","Laminar occurs only at high velocities"], a:1, tag:"theory",
+  exp:"Laminar = طباقي ناعم (زيوت/سرعة قليلة) • Turbulent = فوضوي (هوى/سرعة عالية) (Classification)"},
+ {q:"A closed system (control mass):",
+  opts:["Allows mass to cross its boundary","Consists of a fixed amount of mass — no mass crosses the boundary, but energy (heat/work) can","Allows neither mass nor energy to cross","Must have a fixed volume"], a:1, tag:"theory",
+  exp:"⭐ Closed = كتلة ثابتة مبتعديش بس الطاقة ممكن تعدي — زي الغاز في المكبس (System & CV)"},
+ {q:"A control volume (open system):",
+  opts:["A fixed amount of mass with no energy transfer","A selected region in space through which both mass and energy can cross the boundary","A system that allows no interactions","Always isolated"], a:1, tag:"theory",
+  exp:"⭐ CV = كتلة + طاقة بيعبروا — زي التوربين والمضخة والفوهة (System & CV)"},
+ {q:"Which of the following is an intensive property?",
+  opts:["Total mass","Total volume","Temperature","Total momentum"], a:2, tag:"theory",
+  exp:"Intensive = لا تعتمد على الكمية — حرارة/ضغط/كثافة (Intensive/Extensive)"},
+ {q:"Extensive properties are those that:",
+  opts:["Are independent of the mass of the system","Depend on the size (extent) of the system, such as total mass and total volume","Are always intensive","Are measured per unit mass"], a:1, tag:"theory",
+  exp:"Extensive = بتعتمد على الكمية — اقسم النظام نصين هتقل للنص (Intensive/Extensive)"},
+ {q:"The ideal-gas equation of state is:",
+  opts:["P = ρ / (RT)","P = ρRT","P = RT / ρ","P = ρ + RT"], a:1, tag:"theory",
+  exp:"⭐ P = ρRT (أو Pv = RT) — وخد بالك T لازم كلفن! (Ideal Gas)"},
+ {q:"For a fixed mass of an ideal gas at two different states:",
+  opts:["P₁V₁/T₁ = P₂V₂/T₂","P₁V₁T₁ = P₂V₂T₂","P₁/T₁ = V₂/V₁","P₁V₂ = P₂V₁"], a:0, tag:"theory",
+  exp:"⭐ للكتلة الثابتة النسبة محفوظة بين أي حالتين (Ideal Gas)"},
+ {q:"The vapor pressure of a pure substance equals:",
+  opts:["Its partial pressure in any mixture","Its saturation pressure at the given temperature (Pv = Psat)","The atmospheric pressure","The critical pressure"], a:1, tag:"theory",
+  exp:"⭐ Pv = Psat — القيمتين واحدة للمادة النقية في الاتزان (Vapor Pressure)"},
+ {q:"Cavitation occurs when:",
+  opts:["Liquid pressure rises above the vapor pressure","Liquid pressure drops below the vapor pressure, causing unplanned vaporization and bubbles","The liquid temperature drops below 0°C","Dissolved air is released at high pressure"], a:1, tag:"theory",
+  exp:"⭐⭐ الكافيتاشن = الضغط يقع تحت الضغط البخاري → فقاعات بتتكوّن (Cavitation)"},
+ {q:"Cavitation bubbles are destructive because they:",
+  opts:["Absorb heat from the fluid","Collapse as they leave low-pressure regions, generating destructive pressure spikes that erode impeller blades","Increase the fluid density","Lubricate the pump"], a:1, tag:"theory",
+  exp:"الفقاعات بتنفجر عند الضغط العالي → اهتزاز وصوت وتآكل في المعدن (Cavitation)"},
+ {q:"Enthalpy of a flowing fluid is defined as:",
+  opts:["h = u − Pv","h = u + Pv = u + P/ρ","h = ke + pe","h = ρ/P"], a:1, tag:"theory",
+  exp:"⭐ h = u + P/ρ — الإنثالبي = داخلي + شغل الدفع flow work (Enthalpy)"},
+ {q:"The main reason for defining enthalpy is that it:",
+  opts:["Eliminates the need to measure temperature","Automatically accounts for the flow work (energy of pushing the fluid) in energy analysis of flowing fluids","Makes the fluid incompressible","Reduces viscosity"], a:1, tag:"theory",
+  exp:"لما نستخدم h حسينا بطاقة السائل الماشي وشغل الدفع اتحسب أوتوماتيك — عشان كده عرّفوها (Enthalpy)"}
+];
+
+const LETTERS = ["A","B","C","D"];
+let cur = 0, answers = new Array(Q.length).fill(null), submitted = false, studentName = '';
+let seconds = 0, timerInt = null;
+
+function showReview(){
+  document.getElementById('startScreen').classList.remove('active');
+  document.getElementById('reviewScreen').classList.add('active');
+  window.scrollTo({top:0});
+}
+function goHome(){
+  document.getElementById('reviewScreen').classList.remove('active');
+  document.getElementById('startScreen').classList.add('active');
+  window.scrollTo({top:0});
+}
+function startExam(){
+  studentName = document.getElementById('studentName').value.trim();
+  if(studentName){ document.getElementById('resTitle').textContent = `نتيجتك يا ${studentName} 🎯`; }
+  document.getElementById('startScreen').classList.remove('active');
+  document.getElementById('reviewScreen').classList.remove('active');
+  document.getElementById('quizScreen').classList.add('active');
+  timerInt = setInterval(()=>{ seconds++;
+    const m = String(Math.floor(seconds/60)).padStart(2,'0'), s = String(seconds%60).padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  },1000);
+  render(); renderDots();
+}
+
+function render(){
+  const q = Q[cur];
+  document.getElementById('qNum').textContent = `سؤال ${cur+1} / ${Q.length}`;
+  document.getElementById('curQ').textContent = cur+1;
+  document.getElementById('ansCount').textContent = answers.filter(a=>a!==null).length;
+  document.getElementById('progBar').style.width = (answers.filter(a=>a!==null).length/Q.length*100)+'%';
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qTag').textContent = q.tag==='theory' ? '📖 نظري' : (q.tag==='def' ? '📚 تعريف' : '🧮 حسابي');
+  const box = document.getElementById('optsBox');
+  box.innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const d = document.createElement('div');
+    d.className = 'opt' + (answers[cur]===i?' sel':'');
+    d.innerHTML = `<span class="key">${LETTERS[i]}</span><span class="val"></span>`;
+    d.querySelector('.val').textContent = opt;
+    d.onclick = ()=>{ if(submitted) return; answers[cur]=i; render(); renderDots();
+      setTimeout(()=>{ if(cur<Q.length-1){cur++; render(); renderDots();} }, 320); };
+    box.appendChild(d);
+  });
+  document.getElementById('prevBtn').disabled = cur===0;
+  document.getElementById('nextBtn').textContent = cur===Q.length-1 ? 'آخر سؤال 🏁' : 'التالي ←';
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('cur', i===cur));
+  if(window.gsap){ gsap.fromTo('#optsBox .opt',{opacity:0,y:14},{opacity:1,y:0,duration:.35,stagger:.06,ease:'back.out(1.4)'}); }
+}
+
+function nav(dir){
+  const n = cur+dir;
+  if(n>=0 && n<Q.length){ cur=n; render(); renderDots(); }
+}
+
+function renderDots(){
+  const box = document.getElementById('dotsBox');
+  box.innerHTML='';
+  Q.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className = 'dot' + (answers[i]!==null?' ans':'') + (i===cur?' cur':'');
+    d.textContent = i+1;
+    d.onclick = ()=>{ cur=i; render(); renderDots(); };
+    box.appendChild(d);
+  });
+}
+
+function submitExam(){
+  const un = answers.filter(a=>a===null).length;
+  if(un>0 && !confirm(`لسه عندك ${un} أسئلة من غير إجابة! متأكد إنك عايز تسلم؟ 🤨`)) return;
+  submitted = true; clearInterval(timerInt);
+  document.getElementById('quizScreen').classList.remove('active');
+  document.getElementById('resultScreen').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  let ok=0; answers.forEach((a,i)=>{ if(a===Q[i].a) ok++; });
+  const pct = Math.round(ok/Q.length*100);
+  document.getElementById('okN').textContent = ok;
+  document.getElementById('badN').textContent = Q.length-ok;
+  document.getElementById('totN').textContent = Q.length;
+  setTimeout(()=>{ document.getElementById('ringFg').style.strokeDashoffset = 565.5*(1-pct/100); },150);
+  // count-up %
+  let c=0; const int=setInterval(()=>{ c+=2; if(c>=pct){c=pct;clearInterval(int);} document.getElementById('pctTxt').textContent=c+'%'; },28);
+
+  const gc = document.getElementById('gradeCard');
+  let grade,msg;
+  if(pct>=85){ grade='grade-a'; msg='🅰️ Grade A<br>🌟 ماشاءالله يبني مكانك كلية طب والله 👏'; fireConfetti(); }
+  else if(pct>=70){ grade='grade-b'; msg='🅱️ Grade B<br>💪 كويس يبني والله بس في احسن من كدا'; }
+  else { grade='grade-c'; msg='🅲 Grade C<br>😔 انت مش نافع كدا وهتشيل المادة'; }
+  gc.className = 'grade-card '+grade;
+  gc.innerHTML = msg;
+  drawCertificate(studentName || 'البطل المجهول', pct, pct>=85?'A':(pct>=70?'B':'C'));
+
+  // review
+  const rb = document.getElementById('reviewBox');
+  Q.forEach((q,i)=>{
+    const userA = answers[i];
+    const card = document.createElement('div');
+    card.className='rev-card';
+    card.innerHTML = `<div class="rq"><span class="en">Q${i+1}. </span><span class="en">${q.q}</span></div>`;
+    const lineUser = document.createElement('div');
+    if(userA===null){ lineUser.className='rev-line bad'; lineUser.innerHTML='✍️ إجابتك: <b class="en">— (مفيش إجابة)</b>'; }
+    else if(userA===q.a){ lineUser.className='rev-line ok'; lineUser.innerHTML=`✅ إجابتك: <b class="en">${LETTERS[userA]}) ${q.opts[userA]}</b>`; }
+    else { lineUser.className='rev-line bad'; lineUser.innerHTML=`❌ إجابتك: <b class="en">${LETTERS[userA]}) ${q.opts[userA]}</b>`; }
+    const lineOk = document.createElement('div');
+    lineOk.className='rev-line ok';
+    lineOk.innerHTML = `✔️ الصح: <b class="en">${LETTERS[q.a]}) ${q.opts[q.a]}</b>`;
+    const lineExp = document.createElement('div');
+    lineExp.className='rev-line exp';
+    lineExp.innerHTML = `💡 <b>${q.exp}</b>`;
+    card.appendChild(lineUser); card.appendChild(lineOk); card.appendChild(lineExp);
+    rb.appendChild(card);
+  });
+}
+
+/* ===== confetti ===== */
+
+/* ===== certificate generator ===== */
+function drawCertificate(name, pct, gKey){
+  const box = document.getElementById('certBox');
+  box.innerHTML = '';
+  const cv = document.createElement('canvas');
+  cv.width = 1000; cv.height = 720;
+  const x = cv.getContext('2d');
+
+  const T = {
+    A:{bg:['#FFF9E8','#E9FBF2'], border:'#D4AF37', inner:'#B8963E', emoji:'👑',
+       title:'شهادة تقدير علمي', sub:'CERTIFICATE OF EXCELLENCE',
+       lines:['لأنه أثبت إن الميكانيكا لعبة عيال في إيده 👏','درجته فوق الـ 85% وكسر الدنيا']},
+    B:{bg:['#F4F5FB','#EFEDFC'], border:'#94A3B8', inner:'#64748B', emoji:'🎖️',
+       title:'شهادة مجهود محترم', sub:'CERTIFICATE OF GOOD EFFORT',
+       lines:['مجهود يُحترم فعلًا، بس فيه أحسن من كدا 💪','المرة الجاية هدفنا الـ A يا بطل']},
+    C:{bg:['#FDEDEA','#FFF7E6'], border:'#E17055', inner:'#C0563B', emoji:'🧻',
+       title:'شهادة التعاطف المجتمعي', sub:'CERTIFICATE OF... WELL, TRYING',
+       lines:['لأنه دخل الامتحان وخرج منه بنفس الشكل 😅','قرار مجلس الجامعة: المادة هتشيله قبل ما يشيلها','نصيحة أخوية: راجع الفصل الأول والتاني من جديد 📚']}
+  }[gKey];
+
+  // الخلفية
+  const g = x.createLinearGradient(0,0,1000,720);
+  g.addColorStop(0,T.bg[0]); g.addColorStop(1,T.bg[1]);
+  x.fillStyle = g;
+  roundRect(x,0,0,1000,720,28); x.fill();
+
+  // الإطار الخارجي والداخلي
+  x.strokeStyle = T.border; x.lineWidth = 12;
+  roundRect(x,18,18,964,684,22); x.stroke();
+  x.strokeStyle = T.inner; x.lineWidth = 2.5;
+  roundRect(x,50,50,916,636,16); x.stroke();
+
+  function roundRect(c,a,b,w,h,r){c.beginPath();c.moveTo(a+r,b);c.arcTo(a+w,b,a+w,b+h,r);c.arcTo(a+w,b+h,a,b+h,r);c.arcTo(a,b+h,a,b,r);c.arcTo(a,b,a+w,b,r);c.closePath();}
+
+  x.textAlign = 'center';
+
+  // الإيموجي
+  x.font = '78px serif';
+  x.fillText(T.emoji, 500, 132);
+
+  // العنوان
+  x.fillStyle = T.inner;
+  x.font = '900 52px Cairo, sans-serif';
+  x.fillText(T.title, 500, 212);
+  x.font = '700 21px Outfit, sans-serif';
+  x.fillStyle = '#8B8FA3';
+  x.fillText(T.sub, 500, 250);
+
+  // خط فاصل
+  x.strokeStyle = T.border; x.lineWidth = 3;
+  x.beginPath(); x.moveTo(300,280); x.lineTo(700,280); x.stroke();
+
+  // تُمنح إلى
+  x.fillStyle = '#64748B';
+  x.font = '700 24px Cairo, sans-serif';
+  x.fillText('تُمنح هذه الشهادة إلى', 500, 336);
+
+  // الاسم
+  x.fillStyle = '#0F172A';
+  x.font = '900 62px Cairo, sans-serif';
+  x.fillText(name, 500, 416);
+
+  // الدرجة
+  x.fillStyle = T.inner;
+  x.font = '800 30px Outfit, Cairo, sans-serif';
+  x.fillText(pct + '%  —  Grade ' + gKey, 500, 470);
+
+  // الأسطر الكوميدية
+  x.fillStyle = '#475569';
+  x.font = '700 25px Cairo, sans-serif';
+  T.lines.forEach((l,i)=> x.fillText(l, 500, 530 + i*50));
+
+  // التاريخ والتوقيع
+  const d = new Date();
+  const date = d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+  x.font = '700 20px Cairo, sans-serif';
+  x.fillStyle = '#94A3B8';
+  x.textAlign = 'right'; x.fillText('التاريخ: ' + date, 890, 666);
+  x.textAlign = 'left';  x.fillText('إدارة الامتحانات — د. طنطاوي 😂', 110, 666);
+  x.textAlign = 'center';
+
+  box.appendChild(cv);
+
+  // زرار التحميل
+  const act = document.createElement('div');
+  act.className = 'cert-actions';
+  const btn = document.createElement('button');
+  btn.className = 'btn sm';
+  btn.textContent = '⬇️ حمّل الشهادة';
+  btn.onclick = ()=>{
+    const a = document.createElement('a');
+    a.download = 'certificate-' + (name.replace(/\s+/g,'-')) + '.png';
+    a.href = cv.toDataURL('image/png');
+    a.click();
+  };
+  act.appendChild(btn);
+  box.appendChild(act);
+}
+
+function fireConfetti(){
+  const cv = document.getElementById('confetti'), ctx = cv.getContext('2d');
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#6C5CE7','#00B894','#FDCB6E','#E17055','#74B9FF','#FD79A8'];
+  const ps = Array.from({length:160},()=>({
+    x:Math.random()*cv.width, y:-20-Math.random()*cv.height*0.4,
+    w:6+Math.random()*7, h:8+Math.random()*10,
+    vy:2+Math.random()*3.5, vx:-1.5+Math.random()*3,
+    rot:Math.random()*Math.PI, vr:-0.12+Math.random()*0.24,
+    col:colors[Math.floor(Math.random()*colors.length)]
+  }));
+  let frames=0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(++frames<380) requestAnimationFrame(tick); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
+
+/* GSAP (optional enhancement) */
+const gs = document.createElement('script');
+gs.src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+gs.onload = ()=>{ window.gsap && gsap.from('.hero > *',{opacity:0,y:20,duration:.5,stagger:.08,ease:'back.out(1.4)'}); };
+document.head.appendChild(gs);
+</script>
+</body>
+</html>
